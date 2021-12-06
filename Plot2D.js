@@ -103,8 +103,8 @@ class Plot2D{
     add_vertical_marker(){
         const material_marker = new THREE.LineBasicMaterial( { color: 0xff2949 } );
         let marker_vertice=[]
-        marker_vertice.push(new THREE.Vector3(100,this.canvas_max,0))
-        marker_vertice.push(new THREE.Vector3(100,this.canvas_min,0))
+        marker_vertice.push(new THREE.Vector3(0,this.canvas_max,0))
+        marker_vertice.push(new THREE.Vector3(0,this.canvas_min,0))
         const geometry_marker = new THREE.BufferGeometry().setFromPoints( marker_vertice );
         const vertical_marker = new THREE.Line( geometry_marker, material_marker );
         this.scene.add( vertical_marker )
