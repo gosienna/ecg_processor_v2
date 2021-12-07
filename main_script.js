@@ -88,9 +88,9 @@ function init_ecg(raw_string){
             //flip the click condition
             
             if(click === true){
-                seg_head=parseInt(event.clientX*Plot2D_obj.canvas_width/2000)
+                seg_head=parseInt(event.clientX*Plot2D_obj.canvas_width/4000)
             }else{
-                seg_tail=parseInt(event.clientX*Plot2D_obj.canvas_width/2000)
+                seg_tail=parseInt(event.clientX*Plot2D_obj.canvas_width/4000)
                 seg_info.push([seg_head,seg_tail])
                 //console.log(seg_info)
                 updataSeg(seg_head,seg_tail)
@@ -102,7 +102,7 @@ function init_ecg(raw_string){
     
     function updataMarker(x){
         canvas_obj_list.forEach(function(Plot2D_obj){
-            Plot2D_obj.vertical_marker.position.x=x*Plot2D_obj.canvas_width/2000
+            Plot2D_obj.vertical_marker.position.x=x*Plot2D_obj.canvas_width/4000
         })
     }
     function updataSeg(seg_head,seg_tail){

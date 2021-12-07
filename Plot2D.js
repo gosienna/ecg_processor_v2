@@ -27,7 +27,7 @@ class Plot2D{
         //-----------------------setup renderer-----------------------
         const renderer = new THREE.WebGLRenderer( { antialias: true,canvas: targetCanvas});
         renderer.setPixelRatio( 1 );
-        renderer.setSize( 2000, 150);
+        renderer.setSize( 4000, 150);
 
         document.body.appendChild( renderer.domElement );
         this.renderer = renderer
