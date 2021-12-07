@@ -5,6 +5,7 @@ export {Plot2D}
 
 class Plot2D{
     init(data,canvasID) {
+       
         this.data = data
         //console.log(data)
         //----------------------setup camera----------------------

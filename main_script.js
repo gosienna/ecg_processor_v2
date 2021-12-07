@@ -1,14 +1,18 @@
 import {Plot2D} from './Plot2D.js'
 
-let canvas_ID_list=['canvas_ECG_I','canvas_ECG_II','canvas_ECG_III','canvas_ECG_aVR','canvas_ECG_aVL','canvas_ECG_aVF','canvas_ECG_V1','canvas_ECG_V2','canvas_ECG_V3','canvas_ECG_V4','canvas_ECG_V5','canvas_ECG_V6']
+let canvas_ID_list=['lead_I','lead_II','lead_III','lead_aVR','lead_aVL','lead_aVF','lead_V1','lead_V2','lead_V3','lead_V4','lead_V5','lead_V6']
+//initialize ecg data
+let ecg_data = {}
+canvas_ID_list.forEach(function(ID){
+    ecg_data[ID] = []
+})
 //list of obj that holds all the canvas
 let canvas_obj_list=[]
 //parameter initialization
 let x=100 
 let click=false
-let seg_head=0
-let seg_tail=0
-let string_data=''
+let seg_head = 0
+let seg_tail = 0
 let file_name = ''
 //array to collect segment information
 let seg_info=[]
@@ -22,6 +26,7 @@ document.getElementById('input_lable')
             let fr=new FileReader()
             fr.readAsText(this.files[0])
             file_name=this.files[0].name
+            
             fr.onload=function(){
                 read_lable(fr.result)
             }
@@ -32,7 +37,8 @@ function read_lable(raw_lable){
         let single_lable = e.split(',')
         IDs.push(single_lable[0])
         lables.push(single_lable[1])
-    })  
+    }) 
+
 }
 
 //=====================load text file containing ecg infomation======================
@@ -45,7 +51,9 @@ document.getElementById('input_data')
                 fr.readAsText(this.files[0])
                 file_name=this.files[0].name
                 fr.onload=function(){
-                    init_ecg(fr.result)
+                    ecg_data = extract_ecg(fr.result,file_name)
+                    //console.log(ecg_data)
+                    init_ecg(ecg_data)
                 }
 
             }else{                            //redraw the canvas
@@ -54,29 +62,126 @@ document.getElementById('input_data')
                 fr.readAsText(this.files[0])
                 file_name=this.files[0].name
                 fr.onload=function(){
+                    ecg_data = extract_ecg(fr.result)
+                    init_ecg(string_data)
                     redraw_ecg(fr.result)
                 }
             } 
                 
         })
 
-function init_ecg(raw_string){
-    let index_data=raw_string.indexOf('[Data]')
-    //split the string and get rid of the last element, which is space
-    string_data=raw_string.slice(index_data+8).split('\r\n')
-    string_data.pop()
-    let i = 0
-    canvas_ID_list.forEach(function(id){
-        let ecg=[]
-        string_data.forEach(element => {
-        //element="I,II,III......"
-        ecg.push(parseFloat(element.split(',')[i]))
+function extract_ecg( raw_string , file_name ){
+    let file_type = file_name.split('.').slice(-1)[0]
+    if(file_type === 'txt'){
+        let index_data=raw_string.indexOf('[Data]')
+         //split the string and get rid of the last element, which is space
+        let string_data=raw_string.slice(index_data+8).split('\r\n')
+        string_data.pop()
+        string_data.forEach(function(one_row){
+            let one_instance = one_row.split(',')
+            canvas_ID_list.forEach(function(ID){
+            switch (ID) {
+                case 'lead_I':
+                    ecg_data[ID].push(parseFloat(one_instance[0]))
+                    break
+                case 'lead_II':
+                    ecg_data[ID].push(parseFloat(one_instance[1]))
+                    break
+                case 'lead_III':
+                    ecg_data[ID].push(parseFloat(one_instance[2]))
+                    break
+                case 'lead_aVR':
+                    ecg_data[ID].push(parseFloat(one_instance[3]))
+                    break
+                case 'lead_aVL':
+                    ecg_data[ID].push(parseFloat(one_instance[4]))
+                    break
+                case 'lead_aVF':
+                    ecg_data[ID].push(parseFloat(one_instance[5]))
+                    break
+                case 'lead_V1':
+                    ecg_data[ID].push(parseFloat(one_instance[6]))
+                    break
+                case 'lead_V2':
+                    ecg_data[ID].push(parseFloat(one_instance[7]))
+                    break
+                case 'lead_V3':
+                    ecg_data[ID].push(parseFloat(one_instance[8]))
+                    break
+                case 'lead_V4':
+                    ecg_data[ID].push(parseFloat(one_instance[9]))
+                    break
+                case 'lead_V5':
+                    ecg_data[ID].push(parseFloat(one_instance[10]))
+                    break
+                case 'lead_V6':
+                    ecg_data[ID].push(parseFloat(one_instance[11]))
+                    break    
+            }
+            })
         })
-        i+=1
+        return ecg_data
+    }else if(file_type === 'csv'){
+        let string_data=raw_string.split('\r\n')
+        string_data.shift()
+        string_data.pop()
+        //console.log(string_data)
+        string_data.forEach(function(one_row){
+            let one_instance = one_row.split(',')
+            canvas_ID_list.forEach(function(ID){
+                switch (ID) {
+                    case 'lead_I':
+                        ecg_data[ID].push(parseFloat(one_instance[3]))
+                        break
+                    case 'lead_II':
+                        ecg_data[ID].push(parseFloat(one_instance[4]))
+                        break
+                    case 'lead_III':
+                        ecg_data[ID].push(parseFloat(one_instance[5]))
+                        break
+                    case 'lead_aVR':
+                        ecg_data[ID].push(parseFloat(one_instance[2]))
+                        break
+                    case 'lead_aVL':
+                        ecg_data[ID].push(parseFloat(one_instance[1]))
+                        break
+                    case 'lead_aVF':
+                        ecg_data[ID].push(parseFloat(one_instance[0]))
+                        break
+                    case 'lead_V1':
+                        ecg_data[ID].push(parseFloat(one_instance[6]))
+                        break
+                    case 'lead_V2':
+                        ecg_data[ID].push(parseFloat(one_instance[7]))
+                        break
+                    case 'lead_V3':
+                        ecg_data[ID].push(parseFloat(one_instance[8]))
+                        break
+                    case 'lead_V4':
+                        ecg_data[ID].push(parseFloat(one_instance[9]))
+                        break
+                    case 'lead_V5':
+                        ecg_data[ID].push(parseFloat(one_instance[10]))
+                        break
+                    case 'lead_V6':
+                        ecg_data[ID].push(parseFloat(one_instance[11]))
+                        break    
+                }
+            })
+        })
+        return ecg_data
+    }
+    
+}
 
+
+function init_ecg(ecg_data){    
+    let i = 0
+    
+    canvas_ID_list.forEach(function(id){
         //initialize plot
         let Plot2D_obj = new Plot2D()
-        Plot2D_obj.init(ecg,id)
+        Plot2D_obj.init(ecg_data[id],id)
 
         document.getElementById(id).addEventListener('mousemove',function(event){
             x=event.clientX
@@ -158,19 +263,25 @@ function redraw_ecg(raw_string){
 
 //==========================add 'save result' =============================button 
 document.getElementById('save').addEventListener('click',function(){
-    let ID = file_name.split(' ')[0]
+    let file_type = file_name.split('.').slice(-1)[0]
+    let ID = ''
+    if(file_type === 'txt'){
+        ID = file_name.split(' ')[0]
+    }else if(file_type === 'csv'){
+        ID = file_name.split('.')[0]
+        
+    }
     let index_lable = IDs.indexOf(ID)
     let location = lables[index_lable]
     //initialize header of the .csv file
     let result = 'I,II,III,aVR,aVL,aVF,V1,V2,V3,V4,V5,V6,ID,seg_id,location\n'
     //save all segment result into one .csv file
     for(let i = 0;i < seg_info.length ; i++){
-        let string_seg = string_data.slice(seg_head,seg_tail)
-        string_seg.forEach(function(row){
-            let one_instance=row.split(',')
-            for(let i = 0 ; i < 12 ; i++){
-                result += one_instance[i] += ','
-            }
+        for(let n = seg_info[i][0] ; n < seg_info[i][1] ; n++){
+            canvas_ID_list.forEach(function(ID){
+                result += ecg_data[ID][n] 
+                result += ","
+            })
             result += ID
             result += ','
             result += String(i)
@@ -178,7 +289,8 @@ document.getElementById('save').addEventListener('click',function(){
             result += location
             result += ','
             result += '\n'
-        })    
+        }
+
     }   
 
     //download file
