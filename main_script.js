@@ -57,14 +57,17 @@ document.getElementById('input_data')
                 }
 
             }else{                            //redraw the canvas
-                
+                console.log('2nd')
                 let fr=new FileReader()
                 fr.readAsText(this.files[0])
                 file_name=this.files[0].name
                 fr.onload=function(){
-                    ecg_data = extract_ecg(fr.result)
-                    init_ecg(string_data)
-                    redraw_ecg(fr.result)
+                    //clean ecg_data
+                    canvas_ID_list.forEach(function(ID){
+                        ecg_data[ID] = []
+                    })
+                    ecg_data = extract_ecg(fr.result,file_name)
+                    redraw_ecg(ecg_data)
                 }
             } 
                 
@@ -193,9 +196,9 @@ function init_ecg(ecg_data){
             //flip the click condition
             
             if(click === true){
-                seg_head=parseInt(event.clientX*Plot2D_obj.canvas_width/4000)
+                seg_head=parseInt(event.clientX*Plot2D_obj.canvas_width/2000)
             }else{
-                seg_tail=parseInt(event.clientX*Plot2D_obj.canvas_width/4000)
+                seg_tail=parseInt(event.clientX*Plot2D_obj.canvas_width/2000)
                 seg_info.push([seg_head,seg_tail])
                 //console.log(seg_info)
                 updataSeg(seg_head,seg_tail)
@@ -207,7 +210,7 @@ function init_ecg(ecg_data){
     
     function updataMarker(x){
         canvas_obj_list.forEach(function(Plot2D_obj){
-            Plot2D_obj.vertical_marker.position.x=x*Plot2D_obj.canvas_width/4000
+            Plot2D_obj.vertical_marker.position.x=x*Plot2D_obj.canvas_width/2000
         })
     }
     function updataSeg(seg_head,seg_tail){
@@ -225,21 +228,11 @@ function init_ecg(ecg_data){
     
 }
 
-function redraw_ecg(raw_string){
-    let index_data=raw_string.indexOf('[Data]')
-    //split the string and get rid of the last element, which is space
-    string_data=raw_string.slice(index_data+8).split('\r\n')
-    string_data.pop()
-    let i = 0
-    let ecg=[]
+function redraw_ecg(ecg_data){
+    
     canvas_obj_list.forEach(function(obj){
+        let ecg = ecg_data[obj.canvasID]
         obj.clear_data()
-        ecg = []
-        string_data.forEach(element => {
-        //element="I,II,III......"
-        ecg.push(parseFloat(element.split(',')[i]))
-        })
-        i+=1
         obj.canvas_width = ecg.length
         obj.canvas_max = Math.max(...ecg)
         obj.canvas_min = Math.min(...ecg)
