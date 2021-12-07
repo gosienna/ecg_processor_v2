@@ -110,6 +110,13 @@ function init_ecg(raw_string){
             Plot2D_obj.addSeg(seg_head,seg_tail)
         })
     }
+    //-----------add label for ECG----------------
+    canvas_ID_list.forEach(function(ID){
+        let dom_lable = document.createElement('span')
+        dom_lable.innerHTML=ID
+        let target_canvas = document.getElementById(ID)
+        document.body.insertBefore(dom_lable,target_canvas)
+    })
     
 }
 
