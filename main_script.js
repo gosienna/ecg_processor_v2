@@ -46,6 +46,7 @@ document.getElementById('input_data')
             .addEventListener('change', function() {
 
             if (canvas_obj_list.length === 0){ //initialize the canvas
+                console.log('1st')
                 
                 let fr=new FileReader()
                 fr.readAsText(this.files[0])
@@ -57,11 +58,13 @@ document.getElementById('input_data')
                 }
 
             }else{                            //redraw the canvas
-                console.log('2nd')
+                console.log('redraw')
                 let fr=new FileReader()
                 fr.readAsText(this.files[0])
                 file_name=this.files[0].name
                 fr.onload=function(){
+                    //clean seg_info
+                    seg_info=[]
                     //clean ecg_data
                     canvas_ID_list.forEach(function(ID){
                         ecg_data[ID] = []
@@ -256,6 +259,7 @@ function redraw_ecg(ecg_data){
 
 //==========================add 'save result' =============================button 
 document.getElementById('save').addEventListener('click',function(){
+    console.log(ecg_data,seg_info)
     let file_type = file_name.split('.').slice(-1)[0]
     let ID = ''
     if(file_type === 'txt'){
@@ -281,7 +285,7 @@ document.getElementById('save').addEventListener('click',function(){
             result += ','
             result += location
             result += ','
-            result += '\n'
+            result += '\r\n'
         }
 
     }   
