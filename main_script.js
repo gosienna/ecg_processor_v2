@@ -34,7 +34,7 @@ document.getElementById('input_lable')
             .addEventListener('change', function() {  
             let fr=new FileReader()
             fr.readAsText(this.files[0])
-            file_name=this.files[0].name
+            //file_name=this.files[0].name
             
             fr.onload=function(){
                 read_lable(fr.result)
@@ -250,13 +250,12 @@ function redraw_ecg(ecg_data){
     canvas_obj_list.forEach(function(obj){
         let ecg = ecg_data[obj.canvasID]
         obj.clear_data()
-        obj.canvas_width = ecg.length
-        obj.canvas_max = Math.max(...ecg)
-        obj.canvas_min = Math.min(...ecg)
-        obj.camera.left = 0
-        obj.camera.right = obj.canvas_width
-        obj.camera.top = obj.canvas_max
-        obj.camera.bottom = obj.canvas_min
+        obj.ymax = Math.max(...ecg)
+        obj.ymin = Math.min(...ecg)
+        obj.camera.left = obj.xmin
+        obj.camera.right = obj.xmax
+        obj.camera.top = obj.ymax
+        obj.camera.bottom = obj.ymin
         obj.camera.updateProjectionMatrix()
         //console.log(obj.camera)
         //add vertical marker
