@@ -201,7 +201,8 @@ function init_ecg(ecg_data){
         document.getElementById(id).addEventListener('mousemove',function(event){
             //console.log(event.clientX )
             let rect = this.getBoundingClientRect();
-            x = (Plot2D_obj.xmax-Plot2D_obj.xmin)*((event.clientX-rect.left)/800) + Plot2D_obj.xmin 
+            
+            x = (Plot2D_obj.camera.right-Plot2D_obj.camera.left)*((event.clientX-rect.left)/800) + Plot2D_obj.camera.left 
             updataMarker(x)
         })
 
@@ -210,9 +211,9 @@ function init_ecg(ecg_data){
             //flip the click condition
             let rect = this.getBoundingClientRect();
             if(click === true){
-                seg_head=parseInt((Plot2D_obj.xmax-Plot2D_obj.xmin)*((event.clientX-rect.left)/800) + Plot2D_obj.xmin )
+                seg_head=parseInt((Plot2D_obj.camera.right-Plot2D_obj.camera.left)*((event.clientX-rect.left)/800) + Plot2D_obj.camera.left )
             }else{
-                seg_tail=parseInt((Plot2D_obj.xmax-Plot2D_obj.xmin)*((event.clientX-rect.left)/800) + Plot2D_obj.xmin )
+                seg_tail=parseInt((Plot2D_obj.camera.right-Plot2D_obj.camera.left)*((event.clientX-rect.left)/800) + Plot2D_obj.camera.left )
                 seg_info.push([seg_head,seg_tail])
                 //console.log(seg_info)
                 updataSeg(seg_head,seg_tail)
@@ -274,55 +275,49 @@ function redraw_ecg(ecg_data){
 //==========================extend/shink ecg result========================
 //let ecg can shrink and extend
 document.getElementById("btn_extend").addEventListener('click',function(){
-    console.log("+")
+    //console.log("+")
     canvas_obj_list.forEach(function(Plot2D_obj){
-        Plot2D_obj.camera.right = Plot2D_obj.xmax*0.8
-        Plot2D_obj.xmax = Plot2D_obj.xmax*0.8
+        Plot2D_obj.camera.right = Plot2D_obj.camera.right*0.8
         Plot2D_obj.camera.updateProjectionMatrix ()
     })
 })
 document.getElementById("btn_shrink").addEventListener('click',function(){
-    console.log("-")
+    //console.log("-")
     canvas_obj_list.forEach(function(Plot2D_obj){
-        Plot2D_obj.camera.right = Plot2D_obj.xmax/0.8
-        Plot2D_obj.xmax = Plot2D_obj.xmax/0.8
+        Plot2D_obj.camera.right = Plot2D_obj.camera.right/0.8
         Plot2D_obj.camera.updateProjectionMatrix ()
     })
 })
-//let ecg can move left or right
+//=======================let ecg can move left or right==========================
 document.getElementById("btn_left").addEventListener('click',function(){
-    console.log("+")
+    //console.log("+")
     canvas_obj_list.forEach(function(Plot2D_obj){
-        Plot2D_obj.camera.left = Plot2D_obj.camera.left - 200
-        Plot2D_obj.camera.right = Plot2D_obj.xmax - 200
-        Plot2D_obj.xmax = Plot2D_obj.xmax - 200
+        Plot2D_obj.camera.left = Plot2D_obj.camera.left - 100
+        Plot2D_obj.camera.right = Plot2D_obj.camera.right- 100
         Plot2D_obj.camera.updateProjectionMatrix ()
     })
 })
 document.getElementById("btn_left2").addEventListener('click',function(){
-    console.log("+")
+    //console.log("+")
     canvas_obj_list.forEach(function(Plot2D_obj){
         Plot2D_obj.camera.left = Plot2D_obj.camera.left - 500
-        Plot2D_obj.camera.right = Plot2D_obj.xmax - 500
-        Plot2D_obj.xmax = Plot2D_obj.xmax - 500
+        Plot2D_obj.camera.right = Plot2D_obj.camera.right - 500
         Plot2D_obj.camera.updateProjectionMatrix ()
     })
 })
 document.getElementById("btn_right").addEventListener('click',function(){
-    console.log("-")
+    //console.log("-")
     canvas_obj_list.forEach(function(Plot2D_obj){
-        Plot2D_obj.camera.left = Plot2D_obj.camera.left + 200
-        Plot2D_obj.camera.right = Plot2D_obj.xmax + 200
-        Plot2D_obj.xmax = Plot2D_obj.xmax + 200
+        Plot2D_obj.camera.left = Plot2D_obj.camera.left + 100
+        Plot2D_obj.camera.right = Plot2D_obj.camera.right + 100
         Plot2D_obj.camera.updateProjectionMatrix ()
     })
 })
 document.getElementById("btn_right2").addEventListener('click',function(){
-    console.log("-")
+    //console.log("-")
     canvas_obj_list.forEach(function(Plot2D_obj){
         Plot2D_obj.camera.left = Plot2D_obj.camera.left + 500
-        Plot2D_obj.camera.right = Plot2D_obj.xmax + 500
-        Plot2D_obj.xmax = Plot2D_obj.xmax + 500
+        Plot2D_obj.camera.right = Plot2D_obj.camera.right + 500
         Plot2D_obj.camera.updateProjectionMatrix ()
     })
 })
