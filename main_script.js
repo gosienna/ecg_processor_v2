@@ -252,6 +252,8 @@ function redraw_ecg(ecg_data){
         obj.clear_data()
         obj.ymax = Math.max(...ecg)
         obj.ymin = Math.min(...ecg)
+        obj.xmin = 0
+        obj.xmax = ecg.length
         obj.camera.left = obj.xmin
         obj.camera.right = obj.xmax
         obj.camera.top = obj.ymax
@@ -337,7 +339,7 @@ document.getElementById('save').addEventListener('click',function(){
     }
 
     let index_lable = IDs.indexOf(ID)
-    console.log(IDs)
+    //console.log(IDs)
     let location = lables[index_lable]
     //initialize header of the .csv file
     let result = 'I,II,III,aVR,aVL,aVF,V1,V2,V3,V4,V5,V6,ID,seg_id,location\n'
