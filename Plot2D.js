@@ -52,8 +52,17 @@ class Plot2D{
             const material = new THREE.LineBasicMaterial( { color: 0xff2949 } );
             const points = []
             //push vertice position into the points
-            let start_x = seg_head
-            let seg_data = this.data.slice(seg_head,seg_tail)
+            let seg_data = []
+            let start_x = 0
+            if (seg_tail <= seg_head){ // if user accidentally click right side first
+                
+                seg_data = this.data.slice(seg_tail,seg_head)
+                start_x = seg_tail
+            }else{
+                console.log("?")
+                seg_data = this.data.slice(seg_head,seg_tail)
+                start_x = seg_head
+            }
             seg_data.forEach(
                 function(y){
                     points.push( new THREE.Vector3(start_x,y,1))

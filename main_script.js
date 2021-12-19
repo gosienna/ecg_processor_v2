@@ -344,8 +344,13 @@ document.getElementById('save').addEventListener('click',function(){
     //initialize header of the .csv file
     let result = 'I,II,III,aVR,aVL,aVF,V1,V2,V3,V4,V5,V6,ID,seg_id,location\n'
     //save all segment result into one .csv file
+    
+
+
     for(let i = 0;i < seg_info.length ; i++){
-        for(let n = seg_info[i][0] ; n < seg_info[i][1] ; n++){
+        let left_bound = Math.min(seg_info[i])
+        let right_bound = Math.max(seg_info[i])
+        for(let n = left_bound ; n < right_bound ; n++){
             canvas_ID_list.forEach(function(ID){
                 result += ecg_data[ID][n] 
                 result += ","
