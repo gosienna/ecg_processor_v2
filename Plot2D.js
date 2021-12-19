@@ -10,28 +10,28 @@ class Plot2D{
         //console.log(data)
         //----------------------setup camera----------------------
         
-        //use aspecRatio to transform the ratio back to 1:1
-        /* const aspectRatio=window.innerWidth/window.innerHeight */
-        //const aspectRatio=2
-
-        this.canvas_width=data.length
-        this.canvas_max=Math.max(...data)
-        this.canvas_min=Math.min(...data)
+        //set default data display range is all the data set
+        this.xmax = data.length
+        this.xmin = 0
+        this.ymax=Math.max(...data)
+        this.ymin=Math.min(...data)
         
-        let camera = new THREE.OrthographicCamera(0, this.canvas_width, this.canvas_min, this.canvas_max, -10, 10)
+        let camera = new THREE.OrthographicCamera(this.xmin, this.xmax, this.ymin, this.ymax, -10, 10)
         this.camera = camera
-
         camera.position.z = 0
         let targetCanvas=document.getElementById(canvasID)
 
 
         //-----------------------setup renderer-----------------------
-        const renderer = new THREE.WebGLRenderer( { antialias: true,canvas: targetCanvas});
+        const renderer = new THREE.WebGLRenderer( { antialias: true , canvas: targetCanvas});
         renderer.setPixelRatio( 1 );
-        renderer.setSize( 2000, 150);
+
+        //set the canvas size in the web for displaying the data
+        renderer.setSize( 800, 150);
 
         document.body.appendChild( renderer.domElement );
         this.renderer = renderer
+
         /* //use OrbitControls
         const orbit = new OrbitControls( camera, renderer.domElement );
         //let the object can be zoom in and out
@@ -72,7 +72,7 @@ class Plot2D{
         this.draw_data(data)
         //------------------------render view-----------------
         function render() {
-
+            
             requestAnimationFrame( render );
             renderer.render( scene, camera);
 
@@ -104,17 +104,17 @@ class Plot2D{
     add_vertical_marker(){
         const material_marker = new THREE.LineBasicMaterial( { color: 0xff2949 } );
         let marker_vertice=[]
-        marker_vertice.push(new THREE.Vector3(0,this.canvas_max,0))
-        marker_vertice.push(new THREE.Vector3(0,this.canvas_min,0))
+        marker_vertice.push(new THREE.Vector3(0,this.ymax,0))
+        marker_vertice.push(new THREE.Vector3(0,this.ymin,0))
         const geometry_marker = new THREE.BufferGeometry().setFromPoints( marker_vertice );
         const vertical_marker = new THREE.Line( geometry_marker, material_marker );
         this.scene.add( vertical_marker )
         //let marker position can be accesible from outside
-        this.vertical_marker=vertical_marker
+        this.vertical_marker = vertical_marker
     }
     add_grid(){
         //add grid
-        let num_grid = parseInt(this.canvas_width/200)
+        let num_grid = parseInt((this.xmax-this.xmin)/200)
         const size = num_grid*2*200
         const divisions = num_grid*2
         const colorCenterLine = 0xffffff

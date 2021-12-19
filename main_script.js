@@ -1,7 +1,16 @@
 import {Plot2D} from './Plot2D.js'
+//load BART output file example
+fetch ("file_examples/BART_output.txt")
+.then(x => x.text())
+.then(function(y){
+      ecg_data = extract_ecg(y,'sample_ecg.txt')
+      init_ecg(ecg_data)
+});
 
+
+//canvas ID list  
 let canvas_ID_list=['lead_I','lead_II','lead_III','lead_aVR','lead_aVL','lead_aVF','lead_V1','lead_V2','lead_V3','lead_V4','lead_V5','lead_V6']
-//initialize ecg data
+//get ecg txt/csv file from input
 let ecg_data = {}
 canvas_ID_list.forEach(function(ID){
     ecg_data[ID] = []
@@ -77,6 +86,7 @@ document.getElementById('input_data')
         })
 
 function extract_ecg( raw_string , file_name ){
+    
     let file_type = file_name.split('.').slice(-1)[0]
     if(file_type === 'txt'){
         let index_data=raw_string.indexOf('[Data]')
@@ -188,20 +198,21 @@ function init_ecg(ecg_data){
         //initialize plot
         let Plot2D_obj = new Plot2D()
         Plot2D_obj.init(ecg_data[id],id)
-
         document.getElementById(id).addEventListener('mousemove',function(event){
-            x=event.clientX
+            //console.log(event.clientX )
+            let rect = this.getBoundingClientRect();
+            x = (Plot2D_obj.xmax-Plot2D_obj.xmin)*((event.clientX-rect.left)/800) + Plot2D_obj.xmin 
             updataMarker(x)
         })
 
         document.getElementById(id).addEventListener('click',function(event){
             click=!click
             //flip the click condition
-            
+            let rect = this.getBoundingClientRect();
             if(click === true){
-                seg_head=parseInt(event.clientX*Plot2D_obj.canvas_width/2000)
+                seg_head=parseInt((Plot2D_obj.xmax-Plot2D_obj.xmin)*((event.clientX-rect.left)/800) + Plot2D_obj.xmin )
             }else{
-                seg_tail=parseInt(event.clientX*Plot2D_obj.canvas_width/2000)
+                seg_tail=parseInt((Plot2D_obj.xmax-Plot2D_obj.xmin)*((event.clientX-rect.left)/800) + Plot2D_obj.xmin )
                 seg_info.push([seg_head,seg_tail])
                 //console.log(seg_info)
                 updataSeg(seg_head,seg_tail)
@@ -212,8 +223,9 @@ function init_ecg(ecg_data){
     })
     
     function updataMarker(x){
+        //console.log(x)
         canvas_obj_list.forEach(function(Plot2D_obj){
-            Plot2D_obj.vertical_marker.position.x=x*Plot2D_obj.canvas_width/2000
+            Plot2D_obj.vertical_marker.position.x = x
         })
     }
     function updataSeg(seg_head,seg_tail){
@@ -223,9 +235,11 @@ function init_ecg(ecg_data){
     }
     //-----------add label for ECG----------------
     canvas_ID_list.forEach(function(ID){
-        let dom_lable = document.createElement('span')
-        dom_lable.innerHTML=ID
         let target_canvas = document.getElementById(ID)
+        //add lable
+        let dom_lable = document.createElement('div')
+        dom_lable.classList.add("lable_style")
+        dom_lable.innerHTML=ID
         document.body.insertBefore(dom_lable,target_canvas)
     })
     
@@ -256,8 +270,62 @@ function redraw_ecg(ecg_data){
     })
 
 }
-
-//==========================add 'save result' =============================button 
+//==========================extend/shink ecg result========================
+//let ecg can shrink and extend
+document.getElementById("btn_extend").addEventListener('click',function(){
+    console.log("+")
+    canvas_obj_list.forEach(function(Plot2D_obj){
+        Plot2D_obj.camera.right = Plot2D_obj.xmax*0.8
+        Plot2D_obj.xmax = Plot2D_obj.xmax*0.8
+        Plot2D_obj.camera.updateProjectionMatrix ()
+    })
+})
+document.getElementById("btn_shrink").addEventListener('click',function(){
+    console.log("-")
+    canvas_obj_list.forEach(function(Plot2D_obj){
+        Plot2D_obj.camera.right = Plot2D_obj.xmax/0.8
+        Plot2D_obj.xmax = Plot2D_obj.xmax/0.8
+        Plot2D_obj.camera.updateProjectionMatrix ()
+    })
+})
+//let ecg can move left or right
+document.getElementById("btn_left").addEventListener('click',function(){
+    console.log("+")
+    canvas_obj_list.forEach(function(Plot2D_obj){
+        Plot2D_obj.camera.left = Plot2D_obj.camera.left - 200
+        Plot2D_obj.camera.right = Plot2D_obj.xmax - 200
+        Plot2D_obj.xmax = Plot2D_obj.xmax - 200
+        Plot2D_obj.camera.updateProjectionMatrix ()
+    })
+})
+document.getElementById("btn_left2").addEventListener('click',function(){
+    console.log("+")
+    canvas_obj_list.forEach(function(Plot2D_obj){
+        Plot2D_obj.camera.left = Plot2D_obj.camera.left - 500
+        Plot2D_obj.camera.right = Plot2D_obj.xmax - 500
+        Plot2D_obj.xmax = Plot2D_obj.xmax - 500
+        Plot2D_obj.camera.updateProjectionMatrix ()
+    })
+})
+document.getElementById("btn_right").addEventListener('click',function(){
+    console.log("-")
+    canvas_obj_list.forEach(function(Plot2D_obj){
+        Plot2D_obj.camera.left = Plot2D_obj.camera.left + 200
+        Plot2D_obj.camera.right = Plot2D_obj.xmax + 200
+        Plot2D_obj.xmax = Plot2D_obj.xmax + 200
+        Plot2D_obj.camera.updateProjectionMatrix ()
+    })
+})
+document.getElementById("btn_right2").addEventListener('click',function(){
+    console.log("-")
+    canvas_obj_list.forEach(function(Plot2D_obj){
+        Plot2D_obj.camera.left = Plot2D_obj.camera.left + 500
+        Plot2D_obj.camera.right = Plot2D_obj.xmax + 500
+        Plot2D_obj.xmax = Plot2D_obj.xmax + 500
+        Plot2D_obj.camera.updateProjectionMatrix ()
+    })
+})
+//==========================add 'save result' =============================
 document.getElementById('save').addEventListener('click',function(){
     console.log(ecg_data,seg_info)
     let file_type = file_name.split('.').slice(-1)[0]
@@ -268,7 +336,9 @@ document.getElementById('save').addEventListener('click',function(){
         ID = file_name.split('.')[0]
         
     }
+
     let index_lable = IDs.indexOf(ID)
+    console.log(IDs)
     let location = lables[index_lable]
     //initialize header of the .csv file
     let result = 'I,II,III,aVR,aVL,aVF,V1,V2,V3,V4,V5,V6,ID,seg_id,location\n'
