@@ -323,7 +323,7 @@ document.getElementById("btn_right2").addEventListener('click',function(){
 })
 //==========================add 'save result' =============================
 document.getElementById('save').addEventListener('click',function(){
-    console.log(ecg_data,seg_info)
+    //console.log(ecg_data,seg_info)
     let file_type = file_name.split('.').slice(-1)[0]
     let ID = ''
     if(file_type === 'txt'){
@@ -332,6 +332,7 @@ document.getElementById('save').addEventListener('click',function(){
         ID = file_name.split('.')[0]
         
     }
+    console.log(ID)
 
     let index_lable = IDs.indexOf(ID)
     //console.log(IDs)
@@ -340,11 +341,10 @@ document.getElementById('save').addEventListener('click',function(){
     let result = 'I,II,III,aVR,aVL,aVF,V1,V2,V3,V4,V5,V6,ID,seg_id,location\n'
     //save all segment result into one .csv file
     
-
-
     for(let i = 0;i < seg_info.length ; i++){
-        let left_bound = Math.min(seg_info[i])
-        let right_bound = Math.max(seg_info[i])
+        let left_bound = Math.min(...seg_info[i])
+        let right_bound = Math.max(...seg_info[i])
+        console.log(seg_info[i])
         for(let n = left_bound ; n < right_bound ; n++){
             canvas_ID_list.forEach(function(ID){
                 result += ecg_data[ID][n] 
