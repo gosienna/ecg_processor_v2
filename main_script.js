@@ -1,9 +1,8 @@
 import {Plot2D} from './Plot2D.js'
 //load BART output file example
-fetch ("./file_examples/BART_output.txt")
+fetch ("file_examples/BART_output.txt")
 .then(x => x.text())
 .then(function(y){
-      console.log(y)
       ecg_data = extract_ecg(y,'BART_output.txt')
       init_ecg(ecg_data)
 });
@@ -87,8 +86,8 @@ document.getElementById('input_data')
         })
 
 function extract_ecg( raw_string , file_name ){
-    
     let file_type = file_name.split('.').slice(-1)[0]
+    console.log(file_type)
     if(file_type === 'txt'){
         let index_data=raw_string.indexOf('[Data]')
          //split the string and get rid of the last element, which is space
