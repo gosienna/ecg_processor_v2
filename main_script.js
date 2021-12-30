@@ -94,6 +94,8 @@ function extract_ecg( raw_string , file_name ){
         let string_data=raw_string.slice(index_data+8).split('\r\n')
         string_data.pop()
         console.log(string_data)
+        console.log(raw_string)
+        console.log(index_data)
         string_data.forEach(function(one_row){
             let one_instance = one_row.split(',')
             canvas_ID_list.forEach(function(ID){
