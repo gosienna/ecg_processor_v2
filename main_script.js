@@ -92,6 +92,8 @@ function extract_ecg( raw_string , file_name ){
         let index_data=raw_string.indexOf('[Data]')
          //split the string and get rid of the last element, which is space
         let string_data = raw_string.slice(index_data+8).split('\n')
+        string_data.pop()
+        console.log(string_data)
         string_data.forEach(function(one_row){
             let one_instance = one_row.split(',')
             canvas_ID_list.forEach(function(ID){
