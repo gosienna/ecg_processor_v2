@@ -91,10 +91,11 @@ function extract_ecg( raw_string , file_name ){
     if(file_type === 'txt'){
         let index_data=raw_string.indexOf('[Data]')
          //split the string and get rid of the last element, which is space
-        let string_data=raw_string.slice(index_data+8).split('\r\n')
+        let string_data = raw_string.slice(index_data+8).split('\r\n')
         string_data.pop()
         console.log(string_data)
-        console.log(raw_string)
+        console.log(raw_string.slice(index_data+8))
+        console.log(raw_string.split('\r\n'))
         console.log(index_data)
         string_data.forEach(function(one_row){
             let one_instance = one_row.split(',')
