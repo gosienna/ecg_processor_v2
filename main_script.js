@@ -1,11 +1,9 @@
 import {Plot2D} from './Plot2D.js'
 //load BART output file example
-fetch ("./file_examples/BART_output.txt")
+fetch ("/file_examples/BART_output.txt")
 .then(x => x.text())
 .then(function(y){
-    
       ecg_data = extract_ecg(y,'sample_ecg.txt')
-      console.log(ecg_data)
       init_ecg(ecg_data)
 });
 
