@@ -47,9 +47,18 @@ class Plot2D{
         this.add_vertical_marker()
 
         //-------------------add segment-------------------
-        function addSeg(seg_head,seg_tail){
+        function addSeg(seg_head,seg_tail,wave_type){
+            let material = null
             //create a seg
-            const material = new THREE.LineBasicMaterial( { color: 0xff2949 } );
+            if (wave_type === 'VPC'){  
+                 material = new THREE.LineBasicMaterial( { color: 0xff2949 } );
+                
+            }else if(wave_type === 'VT'){
+                material = new THREE.LineBasicMaterial( { color: 0x32a852 } );
+            }else if(wave_type === 'Sinus'){
+                material = new THREE.LineBasicMaterial( { color: 0xed7e1c } );
+            }
+            //console.log(material)
             const points = []
             //push vertice position into the points
             let seg_data = []
@@ -59,7 +68,7 @@ class Plot2D{
                 seg_data = this.data.slice(seg_tail,seg_head)
                 start_x = seg_tail
             }else{
-                console.log("?")
+                //console.log("?")
                 seg_data = this.data.slice(seg_head,seg_tail)
                 start_x = seg_head
             }

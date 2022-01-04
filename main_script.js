@@ -93,7 +93,7 @@ function extract_ecg( raw_string , file_name ){
          //split the string and get rid of the last element, which is space
         let string_data = raw_string.slice(index_data+8).split('\n')
         string_data.pop()
-        console.log(string_data)
+        //console.log(string_data)
         string_data.forEach(function(one_row){
             let one_instance = one_row.split(',')
             canvas_ID_list.forEach(function(ID){
@@ -215,9 +215,11 @@ function init_ecg(ecg_data){
                 seg_head=parseInt((Plot2D_obj.camera.right-Plot2D_obj.camera.left)*((event.clientX-rect.left)/800) + Plot2D_obj.camera.left )
             }else{
                 seg_tail=parseInt((Plot2D_obj.camera.right-Plot2D_obj.camera.left)*((event.clientX-rect.left)/800) + Plot2D_obj.camera.left )
-                seg_info.push([seg_head,seg_tail])
+                let wave_type=document.getElementById('wave_type').value
+                seg_info.push([seg_head,seg_tail,wave_type])
+                console.log(wave_type)  
                 //console.log(seg_info)
-                updataSeg(seg_head,seg_tail)
+                updataSeg(seg_head,seg_tail,wave_type)
             }
         })
 
@@ -230,9 +232,9 @@ function init_ecg(ecg_data){
             Plot2D_obj.vertical_marker.position.x = x
         })
     }
-    function updataSeg(seg_head,seg_tail){
+    function updataSeg(seg_head,seg_tail,wave_type){
         canvas_obj_list.forEach(function(Plot2D_obj){
-            Plot2D_obj.addSeg(seg_head,seg_tail)
+            Plot2D_obj.addSeg(seg_head,seg_tail,wave_type)
         })
     }
     //-----------add label for ECG----------------
@@ -324,7 +326,7 @@ document.getElementById("btn_right2").addEventListener('click',function(){
 })
 //==========================add 'save result' =============================
 document.getElementById('save').addEventListener('click',function(){
-    //console.log(ecg_data,seg_info)
+    
     let file_type = file_name.split('.').slice(-1)[0]
     let ID = ''
     if(file_type === 'txt'){
@@ -333,19 +335,23 @@ document.getElementById('save').addEventListener('click',function(){
         ID = file_name.split('.')[0]
         
     }
-    console.log(ID)
+    
 
     let index_lable = IDs.indexOf(ID)
-    //console.log(IDs)
     let location = lables[index_lable]
+    console.log(ID,location)
     //initialize header of the .csv file
-    let result = 'I,II,III,aVR,aVL,aVF,V1,V2,V3,V4,V5,V6,ID,seg_id,location\n'
+    let result = 'I,II,III,aVR,aVL,aVF,V1,V2,V3,V4,V5,V6,ID,seg_id,wave_type,location\n'
     //save all segment result into one .csv file
     
     for(let i = 0;i < seg_info.length ; i++){
-        let left_bound = Math.min(...seg_info[i])
-        let right_bound = Math.max(...seg_info[i])
-        console.log(seg_info[i])
+        let bounding = []
+        bounding.push(seg_info[i][0])
+        bounding.push(seg_info[i][1])
+        let left_bound = Math.min(...bounding)
+        let right_bound = Math.max(...bounding)
+        //console.log(bounding,left_bound,right_bound)
+        //console.log(seg_info[i])
         for(let n = left_bound ; n < right_bound ; n++){
             canvas_ID_list.forEach(function(ID){
                 result += ecg_data[ID][n] 
@@ -355,8 +361,9 @@ document.getElementById('save').addEventListener('click',function(){
             result += ','
             result += String(i)
             result += ','
-            result += location
+            result += seg_info[i][2]
             result += ','
+            result += location
             result += '\r\n'
         }
 
