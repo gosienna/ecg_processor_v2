@@ -295,32 +295,49 @@ document.getElementById("btn_shrink").addEventListener('click',function(){
 document.getElementById("btn_left").addEventListener('click',function(){
     //console.log("+")
     canvas_obj_list.forEach(function(Plot2D_obj){
-        Plot2D_obj.camera.left = Plot2D_obj.camera.left - 100
-        Plot2D_obj.camera.right = Plot2D_obj.camera.right- 100
+        Plot2D_obj.camera.left = Plot2D_obj.camera.left - 1000
+        Plot2D_obj.camera.right = Plot2D_obj.camera.right- 1000
         Plot2D_obj.camera.updateProjectionMatrix ()
     })
 })
 document.getElementById("btn_left2").addEventListener('click',function(){
     //console.log("+")
     canvas_obj_list.forEach(function(Plot2D_obj){
-        Plot2D_obj.camera.left = Plot2D_obj.camera.left - 500
-        Plot2D_obj.camera.right = Plot2D_obj.camera.right - 500
+        Plot2D_obj.camera.left = Plot2D_obj.camera.left - 2000
+        Plot2D_obj.camera.right = Plot2D_obj.camera.right - 2000
+        Plot2D_obj.camera.updateProjectionMatrix ()
+    })
+})
+
+document.getElementById("btn_left3").addEventListener('click',function(){
+    //console.log("+")
+    canvas_obj_list.forEach(function(Plot2D_obj){
+        Plot2D_obj.camera.left = Plot2D_obj.camera.left - 3000
+        Plot2D_obj.camera.right = Plot2D_obj.camera.right - 3000
         Plot2D_obj.camera.updateProjectionMatrix ()
     })
 })
 document.getElementById("btn_right").addEventListener('click',function(){
     //console.log("-")
     canvas_obj_list.forEach(function(Plot2D_obj){
-        Plot2D_obj.camera.left = Plot2D_obj.camera.left + 100
-        Plot2D_obj.camera.right = Plot2D_obj.camera.right + 100
+        Plot2D_obj.camera.left = Plot2D_obj.camera.left + 1000
+        Plot2D_obj.camera.right = Plot2D_obj.camera.right + 1000
         Plot2D_obj.camera.updateProjectionMatrix ()
     })
 })
 document.getElementById("btn_right2").addEventListener('click',function(){
     //console.log("-")
     canvas_obj_list.forEach(function(Plot2D_obj){
-        Plot2D_obj.camera.left = Plot2D_obj.camera.left + 500
-        Plot2D_obj.camera.right = Plot2D_obj.camera.right + 500
+        Plot2D_obj.camera.left = Plot2D_obj.camera.left + 2000
+        Plot2D_obj.camera.right = Plot2D_obj.camera.right + 2000
+        Plot2D_obj.camera.updateProjectionMatrix ()
+    })
+})
+document.getElementById("btn_right3").addEventListener('click',function(){
+    //console.log("-")
+    canvas_obj_list.forEach(function(Plot2D_obj){
+        Plot2D_obj.camera.left = Plot2D_obj.camera.left + 3000
+        Plot2D_obj.camera.right = Plot2D_obj.camera.right + 3000
         Plot2D_obj.camera.updateProjectionMatrix ()
     })
 })
